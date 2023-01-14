@@ -1,0 +1,251 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{3-term Arithmetic Progressions}
+\input{macros}
+\author{Siddharth Iyer}
+\date{September 2022}
+
+\begin{document}
+
+\maketitle
+\section{Roth's Theorem}
+\begin{theorem}
+For $n$ sufficiently large, any subset $A\subseteq \{1,\ldots,n\}$ with density $\delta = \Omega(1/\log\log n)$ must contain a 3-term arithmetic progression.
+\end{theorem}
+
+Suppose $A \subseteq \{1,
+\ldots,n\}$ of density $\delta$, that does not contain 3-term arithmetic progressions. It will be convenient to interpret $A$ as a subset of $\mathbb{Z}_p$, where $p$ is a prime between $2n$ and $4n$, and addition being $\bmod~p$.
+
+\subparagraph*{Fourier Analysis over $\mathbb{Z}_N$.} 
+The Fourier transform of a function $f: \mathbb{Z}_N \to \mathbb{C}$ is given as 
+$$f(x) = \sum_{r}\hat{f}(r)\omega^{rx},$$
+where $\omega$ is the $n$-th root of unity and $\hat{f}(r) = \E_y[f(y)\omega^{-ry}]$. The following fact known as Plancherel's theorem, follows from the above definitions of the Fourier coefficients
+$$\sum_r\abs{\hat{f}(r)}^2 = \E_{x}[\abs{f(x)}^2] = \|f\|_2^2.$$
+
+\subparagraph*{Counting the number of 3-term APs.} For a function $f:\mathbb{Z}_p \to \mathbb{C}$, define $$\Lambda_3(f) := \sum_{x,y\in \mathbb{Z}_p}f(x-y)f(x)f(x+y).$$
+Let $1_A$ be the indicator function corresponding to the subset $A$. 
+
+\begin{obs}
+$\Lambda_3(1_A) = \delta n$.
+\end{obs}
+\begin{proof}
+The summands corresponding to $y=0$ contribute to $\Lambda_3(1_A)$ whenever $x\in A$. Hence, $\Lambda_3(1_A) \geq \delta n$. 
+
+When $y\neq 0$, we can assume without loss of generality that $y\in \{1,\ldots,(p-1)/2\}$. Otherwise, we have $-y \in \{1,\ldots,(p-1)/2\}$, and $$1_A(x-y)1_A(x)1_A(x+y) = 1_A(x-(-y))1_A(x)1_A(x+(-y)).$$ 
+Assume to a contradiction that $1_A(x-y) = 1_A(x) = 1_A(x+y) = 1$. In particular, $x\in \{1,\ldots,n\}\subseteq \{1,\ldots,(p-1)/2\}$. Moreover, $x+y \in \{2,\ldots,p-1\}$, and hence $x+y\bmod p = x+y$. Finally, $x-y\in A$ implies that $y \leq x$, for otherwise, $x-y\bmod p  \in \{(p+1)/2,\ldots,p-1\}$. Therefore, the integers $x-y,x,x+y$, are distinct elements of $A$ and form an arithmetic progression, which is impossible. 
+\end{proof}
+
+\subparagraph*{$1_A - \delta1_{[n]}$ has a large Fourier coefficient.}
+For three functions $f,g,h : \mathbb{Z}_p \to \mathbb{C}$, define 
+$$\Lambda(f,g,h) := \sum_{x,y\in \mathbb{Z}_p}f(x-y)g(x)h(x+y).$$
+Note that $\Lambda(f,f,f) = \Lambda_3(f)$. Using the Fourier transforms of $f,g$ and $h$, we have
+\begin{equation}\label{eq:fourier-sum}
+\Lambda(f,g,h) = p^2\sum_r\hat{f}(r)\hat{g}(-2r)\hat{h}(r).
+\end{equation}
+Let us denote $1_A - \delta1_{[n]} : = g$. 
+
+\begin{claim}
+If $\delta^2 \geq 8/n$, then there exists $r\neq 0$ such that $\abs{\hat{g}(r)} \geq C\delta^2$, for some absolute constant $C > 0$.
+\end{claim}
+\begin{proof} 
+Note that $\Lambda_3(1_A) = \Lambda_3(g+\delta1_{[n]})$. Using the $\Lambda$ function, we can write 
+\begin{align*}
+    \Lambda_3(g+\delta1_{[n]}) =& \Lambda_3(g) + \delta\Lambda(g,1_{[n]},g) + 2\delta\Lambda(g,g,1_{[n]}) +\\
+&\delta^3\Lambda_3(1_{[n]}) + \delta^2\Lambda(1_{[n]},g,1_{[n]}) + 2\delta^2\Lambda(1_{[n]},1_{[n]},g).
+\end{align*}
+We will show that the dominant term in the above sum is due to $\delta^3\Lambda_3(1_{[n]})$. 
+First, it is easy to see that $\Lambda_3(1_{[n]})\geq n^2/4$. Indeed, for any $x\in [n]$, we have $1_{[n]}(x-y)1_{[n]}(x)1_{[n]}(x+y) = 1$, when $y\in \{0\}\cup([x-1]\cap[n-x])$. Hence, $$\Lambda_3(1_{[n]}) \geq \sum_{x = 1}^{n}\min\{x,n-x+1\} \geq 2\sum_{x=1}^{n/2}x \geq n^2/4.$$ 
+
+Next, we upper bound the remaining terms using the Fourier transforms of the respective functions and \Cref{eq:fourier-sum}.
+For example,
+\begin{align*}
+\Lambda(g,g,1_{[n]}) &= p^2\bigabs{\sum_{r}\hat{g}(r)\hat{g}(-2r)\hat{1_{[n]}}(r)} \\
+&\leq \max_{r}\abs{\hat{g}(r)}\sum_r\abs{\hat{g}(-2r)}\cdot\abs{\hat{1_{[n]}}(r)} \tag{triangle inequality}\\
+&\leq \max_{r}\abs{\hat{g}(r)}\sqrt{\sum_r\abs{\hat{g}(r)}^2}\sqrt{\sum_r\abs{\hat{1_{[n]}}(r)}^2} \tag{Cauchy-Schwarz}\\
+&= \max_{r\neq 0}\abs{\hat{g}(r)}\cdot\|g\|_2\cdot\|1_{[n]}\|_2,\tag{Plancherel}
+\end{align*}
+where in the last line we also use the fact that $\hat{g}(0) = 0$. The same analysis also shows that $\Lambda(g,1_{[n]},g)\leq \max_{r\neq 0}\abs{\hat{g}(r)}\cdot\|g\|_2\cdot\|1_{[n]}\|_2$.
+Similarly, 
+$$\Lambda(g,1_{[n]},1_{[n]}),\Lambda(1_{[n]},g,1_{[n]}) \leq p^2\max_{r\neq 0}\abs{\hat{g}(r)}\cdot\|1_{[n]}\|_2^2,$$
+and $\Lambda_3(g) \leq p^2\max_{r\neq 0}\abs{\hat{g}(r)}\cdot\|g\|_2^2$. Therefore,
+\begin{align*}
+    \Lambda_3(g+\delta1_{[n]}) &\geq \delta^3n^2/4 - p^2\max_{r\neq 0}\abs{\hat{g}(r)}\left(3\delta\|g\|_2\cdot\|1_{[n]}\|_2 + 3\delta^2\|1_{[n]}\|_2^2 + \|g\|_2^2\right) \\
+    &\geq \delta^3n^2/4 - 8\delta p^2\max_{r\neq 0}\abs{\hat{g}(r)},
+\end{align*}
+which follows by noting that $\|g\|_2^2 \leq \|g\|_1 \leq 2\delta$.
+
+Recalling that $\Lambda_3(g+\delta1_{[n]}) = \Lambda_3(1_{A}) = \delta n$ and rearranging, we get
+$$8\delta p^2\max_{r\neq 0}\abs{\hat{g}(r)} \geq \delta^3n^2/4 - \delta n \geq \delta^3n^2/8,$$  which implies $\max_{r\neq 0}\abs{\hat{g}(r)}\geq C\delta^2.$
+\end{proof}
+
+\subparagraph*{Density increment.}  We will now find a progression of the form $$P_y = \{y,y+\beta,\ldots,y+(k-1)\beta\},$$ for some $y,\beta$ and $k\in \mathbb{Z}_p$, restricted to which, $A$ is denser. Assuming $P_y\subseteq [n]$, we have 
+$$\abs{\E_{z\in P_y}[g(z)]} = \left|\frac{|A\cap P_y| - \delta|P_y\cap[n]|}{|P_y|}\right| = \left|\frac{|A\cap P_y|}{|P_y|} - \delta\right|,$$ which shows that $\abs{\E_{z\in P_y}[g(z)]}$ is a measure of how much the density $|A\cap P_y|/|P_y|$ differs from $\delta$. 
+%Provided $\beta,k$ are not too large, we will show that $\abs{\E_{z\in P_y}[g(z)]}$ can be approximated by $\abs{\E_{z\in P_y}[g(z)\omega^{rz}]}$, which we will lower bound using the fact that $|\hat{g}(r)| = \Omega(\delta^2)$.
+In order to reason about $\abs{\E_{z\in P_y}[g(z)]}$ and choose an appropriate progression $P_y$ we will use the concept of convolution. For two functions $f_1,f_2 : \mathbb{Z}_p \to \mathbb{C}$, the convolution $f_1\ast f_2$ is a function defined as
+$$f_1\ast f_2(y) = \E_z[f_1(z)f_2(y-z)].$$
+For a subset $S$, if we set $f_2$ to be its characteristic function, $1_S$, then $$f_1\ast 1_S(y) = \frac{|S|}{p}\E_{z\in y-S}[f_1(z)],$$
+where $x-S$ is simply the reflected set $-S$, shifted by $y$. Therefore, for any $y$, the quantity $\abs{\E_{z\in P_y}[g(z)]}$ is proportional to $\abs{g\ast 1_{-P_0}(y)}$. The convolution $f_1\ast f_2$ additional enjoys the property that its Fourier   coefficients are simply products of those of $f_1$ and $f_2$. In particular, we have  $$\abs{\hat{g\ast1_{-P_0}}(r)} = \abs{\hat{g}(r)}\cdot\abs{\hat{1_{-P_0}}(r)} = \abs{\hat{g}(r)}\cdot\abs{\hat{1_{P_0}}(r)}.$$ From the previous section, we know that $|\hat{g}(r)| = \Omega(\delta^2)$. Now, we will choose the parameters $\beta$ and $k$ to ensure that $
+\abs{\hat{1_{P_0}}(r)}$ is also large. This will imply that the convolution has a large Fourier coefficient. A lower bound on the Fourier coefficient in turn implies that $g\ast1_{-P_0}(y)$ cannot be small everywhere, which will allow us to find a progression $P_y$ where the density increases.
+
+\begin{claim}\label{claim:proxy}
+$$\abs{\hat{1_{P_0}}(r)} \geq \frac{k}{p}\left(1 - 2\pi k\left\|\frac{r\beta}{p}\right\|\right),$$ where $\|x\|$ denotes the distance of $x$ to the closest integer.
+\end{claim}
+\begin{proof} 
+We have 
+\begin{align*}
+\abs{\hat{1_{P_0}}(r)} &= \frac{k}{p}\bigabs{\E_{z\in P_0}[\omega^{-rz}]} \\
+&\geq \frac{k}{p}\left(1 - \bigabs{\E_{z\in P_0}[1-\omega^{-rz}]}\right) \\
+&\geq \frac{k}{p}\left(1-  \max_{\ell\in [k]}\abs{1- \omega^{\ell\beta r}}\right) \geq \frac{k}{p}\left(1-  k\abs{1- \omega^{\beta r}}\right).
+\end{align*}
+Moreover, $\abs{1-\omega^{\beta r}} = 2\abs{\sin(\pi\beta r/p)} = 2\abs{\sin(\pi \|r\beta/p\|)} \leq 2\pi\|r\beta/p\|$. 
+\end{proof}
+
+In order to use the previous claim, we must impose certain constraints on the common difference $\beta$ to control the error in the above approximation while simultaneously ensuring that $P_0$ is a legitimate progression in $[n]$. Choosing $\beta = r^{-1}$ would ensure that the error in the approximation is sufficiently small, however, $r^{-1}$ could be quite large, which might result in several points in $P_0$ wrapping around. If instead, we set $\beta = 1$, then it easy to ensure $P_0$ is a valid progression but the error could be quite large. It turns out that there is a choice of $\beta$ that is not too large and also ensures a small error in the approximation.
+
+\begin{obs}
+Let $t < p$. There exists $\beta\in [t]$, such that $r\beta\bmod p \leq p/t$.
+\end{obs}
+\begin{proof}
+Indeed, if we partition $\{0,\ldots,p-1\}$ into $t$ consecutive disjoint intervals, each of length at most $p/t$, it follows by the pigeonhole principle that for some two distinct values $a > b\in \{1,\ldots,t\}$, both $ar\bmod p$ and $br\bmod p$ land in the same interval. The claim follows by setting $\beta =  a-b$. 
+\end{proof}   
+
+For a parameter $t \in \mathbb{N}$ that we shall set later, let $\beta$ be as promised by the previous observation. Then, the common difference in $P_0$ is bounded by $t$. If in addition, we set the length $k$ so that $kt \ll n$, then $P_y$ is a legitimate progression in $[n]$ as long as $y \in [n-kt]$. Let us denote $E_1:= \{n+1,\ldots,p-kt\}$ and $E_2:= \{0,\ldots,p-1\}\setminus\left([n-kt]\cup E_1\right)$. Note that
+\begin{align*}
+    \abs{g\ast1_{-P_0}(y)} = \frac{k}{p}\abs{\E_{z\in P_y}[g(z)]} = \begin{cases} 0,\text{ if } y\in E_1\\ k/p, \text{ if } y\in E_2,\end{cases}
+\end{align*}
+where the first case follows by observing that $g(z) = 0$ for all $z\in P_y$ since $P_y\cap [n] = \emptyset$, and the second case uses the fact that $g$ is bounded in $[-1,1]$. 
+
+We are now ready a progression $P_y$ where the density increases. We have,
+\begin{align*}
+     \abs{\hat{g\ast 1_{-P_0}}(r)} &= \abs{\hat{g\ast 1_{-P_0}}(r)} + \hat{g\ast 1_{-P_0}}(0) \\ 
+     &\leq \E_y[\abs{g\ast 1_{-P_0}(y)\omega^{-ry}} + g\ast 1_{-P_0}(y)] \\ 
+    &\leq \frac{k}{p}\left(\max_{y\in [n-kt]}\left(\abs{\E_{z\in P_y}[g(z)]} + \E_{z\in P_y}[g(z)]\right) + \frac{2|E_2|}{p}\right).
+\end{align*}
+In the first equality, above we use the fact that $\hat{g\ast 1_{-P_0}}(0) = 0$ since $\hat{g}(0) = 0$.  
+
+Using the fact that $\abs{\hat{g}(r)} \geq \Omega(\delta^2)$ and \Cref{claim:proxy}, we have
+\begin{align*}
+    \max_{y\in [n-kt]}\left(\abs{\E_{z\in P_y}[g(z)]} + \E_{z\in P_y}[g(z)]\right) +  \frac{2|E_2|}{p} &\geq C\delta^2\left(1 - \frac{2\pi k}{t}\right) \\
+    \implies \max_{y\in [n-kt]}\left(\abs{\E_{z\in P_y}[g(z)]} + \E_{z\in P_y}[g(z)]\right) &\geq C\delta^2\left(1 - \frac{2\pi k}{t}\right) - \frac{4kt}{p}.
+\end{align*}
+Setting $kt = Cp\delta^2/16$ and $k/t = 1/4\pi$, we see that 
+\begin{align*}
+    \max_{y\in [n-kt]}\left(\abs{\E_{z\in P_y}[g(z)]} + \E_{z\in P_y}[g(z)]\right) \geq C\delta^2/4,
+\end{align*}
+which implies that $\E_{z\in P_y}[g(z)] \geq C\delta^2/8$, since $\abs{\E_{z\in P_y}[g(z)]} + \E_{z\in P_y}[g(z)] \geq 0$. By our choice parameters $\beta,k$ and $y$, we have a progression $P_y\subseteq [n]$ of length at least $C'\delta\sqrt{p}$, where $|A\cap P_y| \geq |P_y|(\delta+C'\delta^2)$, for an absolute constant $C' > 0$.
+
+\subparagraph*{Calculations for the density constraint.} Starting with a set $A \subseteq [n]$ of density $\delta$, that does not contain $3$-term APs, we can repeatedly restrict $A$ to a progression and increase the density so long as $\delta^2 \geq 8/n$. In every iteration, the size of the ambient set shrinks to $C'\sqrt{n}\delta$ while the density increases by additive $C'\delta^2$, for some absolute constant $C'$. This process must terminate after $m := 8C'/\delta + \log(1/C'\delta)$ steps because then the density would exceed one. However, even after these number of steps the size of the ambient set is at least $n^{2^{-m}}(\delta^2C')^{m} > 8/\delta^2$, if $\delta = \Omega(1/\log \log n)$. 
+
+\section{Improved Density Estimate}
+Again let $A\subseteq [n]$ of density $\delta$. In this section, we shall think of $A$ being a subset of $\mathbb{Z}_n$ with addition being $\bmod ~n$. Throughout this section, we will denote $J := \{-n/12+1,\ldots,n/12\}$.
+\begin{claim}\label{claim:large-norm}
+If $\left|A\cap\left(\frac{n}{2}+J\right)\right| \geq \frac{\delta |J|}{2}$ and $\delta^2 > \frac{1}{1200n}$ then 
+\begin{equation}\label{eq:large-norm}
+\sum_{r\neq 0}\abs{\hat{1_A}(r)}^3 \geq 10^{-6}\delta^3.
+\end{equation}
+\end{claim}
+Note that if $\left|A\cap\left(\frac{n}{2}+J\right)\right| < \frac{\delta |J|}{2}$ then  $$\left|A\cap\left[\frac{5n}{12}\right]\right|+ \left|A\cap\left(\frac{7n}{12} + \left[\frac{5n}{12}\right]\right)\right| > \delta n - \frac{\delta n}{12} =  \frac{11\delta n}{12} = \frac{11\delta n}{10}\cdot\frac{10n}{12}.$$ This implies that the density of $A$ restricted to a shift of $[5n/12]$ increases by $\delta/10$.
+\begin{proof}(of \Cref{claim:large-norm})
+Denote $u = 1_A\cdot1_{n/2+2J}$. 
+We claim that 
+$$\Lambda(1_A,u,u)  = \sum_{x,y}1_A(x-y)u(x)u(x+y) \leq |A|.$$ 
+Indeed, if $u(x) = u(x+y) = 1$ then both $x,x+y\in \frac{n}{2}+2J = \{\frac{n}{3}+2,\ldots,\frac{2n}{3}\}$. 
+This implies that $y\in \{-\frac{n}{3}+2,\ldots,\frac{n}{3}-2\} = -2 + 4J$. 
+Since this set is symmetric, it contains $-y$, which implies
+$$x-y \in \left(\frac{n}{2} - 2\right) + 6J =\left(\frac{n}{2} - 2\right) + \left\{-\frac{n}{2}+6,\ldots,\frac{n}{2}\right\} = \{4,\ldots,n-2\}.$$ 
+Then, $x-y,x$ and $x+y$ form a 3-term AP in $[n]$, which is impossible, unless $y=0$, in which case, the above sum is at most $|A|$. 
+
+Now, we will lower bound $\Lambda(1_A,u,u)$. 
+Denote $v= 1_A\cdot(1_{\frac{n}{2}+J}\ast1_{\frac{n}{2}+J})$. 
+Since for every $x$, $u(x) \geq v(x)$, it follows that $\Lambda(1_A,v,v) \leq \Lambda(1_A,u,u) \leq \delta n$. Applying \Cref{eq:fourier-sum} for $\Lambda(1_A,v,v)$, we have
+\begin{align*}
+\delta n
+\geq n^2\sum_{r }\hat{1_A}(r)\cdot\hat{v}(r)\cdot \hat{v}(-2r) 
+%&\geq n^2\left(\hat{1_A}(0)\cdot\hat{v}(0)^2- \bigabs{\sum_{r\neq 0}\hat{1_A}(r)\cdot\hat{v}(r)\cdot \hat{s}(-2r)}\right) \\
+\geq n^2\left(\frac{\delta^3}{600} - \sum_{r\neq 0}\abs{\hat{1_A}(r)}\cdot\abs{\hat{v}(r)}\cdot \abs{\hat{v}(-2r)}\right),
+\end{align*}
+where in the last step, we used the fact that $\abs{\hat{v}(0)} \geq \delta/24$.
+This follows by observing that $v(x) \geq \frac{1_A(x)}{2}$, for every $x\in \frac{n}{2} + J$, and $|A\cap(\frac{n}{2} + J)| \geq  \frac{\delta n}{12}$.
+Rearranging, we get 
+$$\sum_{r\neq 0}\abs{\hat{1_A}(r)}\cdot\abs{\hat{v}(r)}\cdot\abs{\hat{v}(-2r)} \geq  \frac{\delta^3}{600} - \frac{\delta}{n} > \frac{\delta^3}{1200}.$$
+ 
+We can upper bound the above sum as follows
+\begin{align*}
+    \sum_{r\neq 0}\abs{\hat{1_A}(r)}\cdot\abs{\hat{v}(r)}\cdot\abs{\hat{v}(-2r)} &\leq \sqrt{\sum_{r\neq 0}\abs{\hat{1_A}(r)}\cdot\abs{\hat{v}(r)}^2}\cdot \sqrt{\sum_{r\neq 0}\abs{\hat{1_A}(r)}\cdot\abs{\hat{v}(-2r)}^2}\\
+    &\leq \left(\sum_{r\neq 0} \abs{\hat{1_A}(r)}^3\right)^{1/3}\cdot\left(\sum_{r}\abs{\hat{v}(r)}^3\right)^{2/3},
+\end{align*}
+where we use Cauchy-Schwarz inequality in the first step and H\"older's inequality in the second. We can bound the norm of the Fourier spectrum of the function $f\ast g$ in terms of appropriate norms of the Fourier spectrum of $f$ and $g$. We have,
+\begin{equation}\label{eq:Young-ineq-special-case}
+\|\hat{f\ast g}\|_p \leq \|\hat{f}\|_p\cdot\|\hat{g}\|_1.
+\end{equation}
+
+Using this, we have
+\begin{align*}
+\|\hat{v}\|_3 &\leq \|\hat{1_A}\|_3\cdot\|\hat{1_{\frac{n}{2}+J}\ast1_{\frac{n}{2}+J}}\|_1 \\
+&= \|\hat{1_A}\|_3\cdot\left(\sum_{r}\abs{\hat{1_{\frac{n}{2}+J}}(r)}^2\right) = \|\hat{1_A}\|_3\cdot\|1_{\frac{n}{2}+J}\|_2^2 = \|\hat{1_A}\|_3/6.
+\end{align*}
+Therefore, we obtain
+\begin{align*}
+\frac{\delta^3}{1200} &\leq \left(\sum_{r\neq 0} \abs{\hat{1_A}(r)}^3\right)^{1/3}\cdot
+\frac{\|\hat{1_A}\|_3^{2}}{36} \\
+&\leq \frac{1}{36}\left(\sum_{r\neq 0}\abs{\hat{1_A}(r)}^3\right)^{1/3}\cdot\left(\delta^3 + \sum_{r\neq 0} \abs{\hat{1_A}(r)}^3\right)^{2/3},
+\end{align*}
+which implies that $\sum_{r\neq 0} \abs{\hat{1_A}(r)}^3 \geq 10^{-6}\delta^3$.
+\end{proof}
+
+\subparagraph*{Density Increment.} In the previous section, we found a progression of length $\approx \delta\sqrt{n}$, restricted to which, the density of $A$ increased by $\approx \delta^2$. In order to obtain this we used the fact that some non trivial Fourier coefficient of $1_{A} -\delta 1_{[n]}$ had magnitude $\approx \delta^2$. 
+
+We will follow the same density increment template. First, let us order the elements in $\mathbb{Z}_{[n]}\setminus \{0\}$ as $r_1,\ldots,r_{n-1}$ so that $\abs{\hat{1_A}(r_1)} \geq \ldots \geq \abs{\hat{1_A}(r_{n-1})}$.
+Our starting point is \Cref{eq:large-norm}\footnote{Note that this equation already implies that some non-trivial Fourier coefficient of $1_A$ has magnitude at least $\approx \delta^2$.}, and using this, we will show the following.  
+\begin{enumerate}
+    \item Assuming $A$ is sufficiently ($\delta \geq (\log n)^{-O(1)}$), there exists $q \leq (\log n)^{O(1)}$ such that $\sum_{i=1}^{q}\abs{\hat{1_{A}}(r_i)}^2 = \Omega(q^{1/3}\delta^2)$, and 
+    \item there is a progression $P_y = \{y,y+\beta,\ldots,y+(k-1)\beta\}$ such that $k\beta < n$, $|P_y| = \Omega(n^{1/(q+1)})$, and $\E_{z\in P_y}[1_{A}(z)]^2 = \delta^2 + \Omega\left(\sum_{i=1}^{q}\abs{\hat{1_{A}}(r_i)}^2\right)$.
+\end{enumerate}
+
+The assumption that $k\beta < n$ is useful because it implies, $P_y$ can be partitioned into two sub-progressions that are legitimate progressions in $[n]$.
+
+\begin{claim}
+For any $\eps > 0$, assuming \Cref{eq:large-norm}, there exists $q\leq \delta^{-3}$ and a constant $C$ (depending on $\eps$) such that 
+\begin{equation}\label{eq:conc}
+    \sum_{i=1}^{q}\abs{\hat{1_{A}}(r_i)}^2 \geq  C\delta^2q^{1/3-2\eps}
+\end{equation}
+\end{claim}
+\begin{proof}
+Denote $t= \delta^{-3}$. We shall prove the stronger statement that for some $q\leq t$ it holds that $\abs{\hat{1_A(r_q)}} \geq C\delta q^{-(1/3+\eps)}$. Indeed, this implies,
+$$\sum_{i=1}^{q}\abs{\hat{1_A(r_i)}}^2 \geq q\abs{\hat{1_A(r_q)}}^2 \geq C^2\delta^2q^{1/3-2\eps}.$$
+Therefore, assume to a contradiction that $\abs{\hat{1_A(r_q)}} < C\delta q^{-(1/3+\eps)}$ for all $q\leq t$. This immediately implies,  $$\sum_{i>t}\abs{\hat{1_A(r_i)}}^3 \leq \delta\cdot\abs{\hat{1_A(r_t)}} \leq C\delta^2t^{-1/3} = C\delta^3.$$
+Moreover, 
+\begin{align*}
+    \sum_{i\geq 1}\abs{\hat{1_A(r_i)}}^3 &\leq C^3\delta^3\sum_{q=1}^{t}q^{-(1+3\eps)} + C\delta^3 \\
+    &\leq C^3\delta^3\left(1 + \int_{2}^{q}(x-1)^{-(1+3\eps)}\right)+ C\delta^3 < C\delta^3\left(2 + \frac{1}{3\eps}\right),
+\end{align*}
+which contradicts \Cref{claim:large-norm}, if $C = \eps10^{-6}$.
+\end{proof}
+
+\begin{claim}
+For every $q > 0$, there exists a progression $P = \{0,\beta,\ldots,(k-1)\beta\}$ and $y\in \mathbb{Z}_n$ such that $k\beta < n$ and $ k \geq (n^{1/(q+1)})/4\pi$, and 
+$$\E_{z\in y+P}[1_{A}(z)]^2 = \delta^2 + \frac{1}{4}\sum_{i=1}^{q}\abs{\hat{1_{A}}(r_i)}^2.$$
+\end{claim}
+\begin{proof}
+First, we choose a common difference $\beta$ so that for the progression $P = \{0,\beta,\ldots,(k-1)\beta\}$, we have $$\abs{\hat{1_P}(r_i)} \geq \frac{k}{2n}, \text{ for every } i \in [q].$$
+For a parameter $t>0$, let us partition $\{0,\ldots,n-1\}$ into $\ell = t^{1/q}$ disjoint consecutive intervals, $I_1,\ldots,I_\ell$. These sets induce a partition of the product set $\{0,\ldots,n-1\}^q$ into cells, where each cell is a Cartesian product of $q$ intervals. For each $j\in \{1,\ldots,t\}$, we can identify the tuple $(jr_1,\ldots,jr_q)$ by the cell that contains it. Since the number of cells is $\ell^q \leq t$, the pigeonhole principle implies that there must be distinct $j,j'$ such that the corresponding tuples are contained in the same cell. Setting $\beta = j-j'$, we see that $\beta r_i \in \{-n/\ell,\ldots,n/\ell\}$. Now, we have
+\begin{align*}
+    \abs{\hat{1_{P}(r_i)}} &= \frac{k}{n}\abs{\E_{z\in P}[\omega^{-zr_i}]} \\
+    &\geq \frac{k}{n}\left(1 - \abs{\E_{z\in P}[1 - \omega^{-zr_i}]}\right) \\
+    &\geq \frac{k}{n}\left(1 - \max_{j\in [k]}\abs{1 - \omega^{-r_ik\beta}}\right) 
+    \geq \frac{k}{n}\left(1 - k\abs{1 - \omega^{-r_i\beta}}\right) %= \frac{k}{n}\left(1 - 2k\sin(\pi r_i\beta)\right) \geq \frac{k}{n}\left(1 - 2\pi k\| r_i\beta\|\right)
+\end{align*}
+Using the fact that $$\abs{1 - \omega^{-r_i\beta}} = 2\sin\left(\frac{\pi r_i\beta}{n}\right) \leq 2\pi\left\|\frac{r_i\beta}{n}\right\| \leq \frac{2\pi}{\ell},$$
+and setting $k = \ell/4\pi$, we have $$\abs{\hat{1_{P}(r_i)}} \geq \frac{k}{n}\left(1 - \frac{2\pi k}{\ell}\right) \geq \frac{k}{2n}.$$
+
+Note that $k\beta \leq \ell t/4\pi \leq t^{(q+1)/q}/4\pi$. Setting $t= n^{q/(q+1)}$, we can ensure that $k\beta < n$. This gives us a progression $P$ of length $k = \ell/4\pi = n^{1/(q+1)}/4\pi$, as desired. It remains to find a shift of $P$ where the density of $A$ increases. Since $|1_{A}\ast1_{-P}(y)| = (k/n)\E_{z\in y+P}[1_{A}(z)]$, it suffices to lower bound $\|1_{A}\ast1_{-P}\|_{\infty}^2$. We have
+\begin{align*}
+\|1_{A}\ast1_{-P}\|_{\infty}^2 &\geq \|1_{A}\ast1_{-P}\|_{2}^2 \\
+&= \sum_{r}\abs{\hat{1_{A}}(r)}^2\abs{\hat{1_{-P}}(r)}^2 \\
+&\geq \delta^2\abs{\hat{1_{P}}(0)}^2 + \sum_{i=1}^{q}\abs{\hat{1_{A}}(r)}^2\abs{\hat{1_{P}}(r)}^2 \\
+&= \left(\frac{k}{n}\right)^2\left(\delta^2 + \frac{1}{4}\sum_{i=1}^{q}\abs{\hat{1_{A}}(r)}^2\right),
+\end{align*}
+which implies the claim.
+\end{proof}
+\end{document}
